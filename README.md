@@ -1,0 +1,1 @@
+NodeJS bootstrap project with auth, ES6, async / await, Mongodb and Redis

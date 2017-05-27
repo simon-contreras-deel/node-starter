@@ -1,0 +1,17 @@
+{
+    "apps" : {
+        "cms" : {
+            "listenPort": 3000
+        },
+        "api" : {
+            "listenPort": 3001
+        }
+    },
+    "redisConnectionUri": "redis://localhost:32769/0",
+    "mongodbConnectionUri" : "mongodb://localhost:32768/auth",
+    "secret": "ohuhyeahhhpassmolon",
+    "expressDeliver":{
+        "printErrorStack": false,
+        "printInternalErrorData": false
+    }
+}

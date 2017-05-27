@@ -1,0 +1,38 @@
+{
+  "name": "auth",
+  "version": "0.0.1",
+  "description": "Starter project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-test": "DEBUG=app* nodemon test/index.js",
+    "dev": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js",
+    "lint": "eslint ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
+    "debug": "^2.6.8",
+    "express": "^4.15.3",
+    "express-deliver": "^1.0.0-rc-5",
+    "helmet": "^3.6.1",
+    "jsonwebtoken": "^7.4.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "mongoose": "^4.10.2",
+    "morgan": "^1.8.2",
+    "q": "^1.5.0",
+    "redis": "^2.7.1",
+    "sequelize": "^3.30.4",
+    "yargs": "^8.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.0.0",
+    "faker": "^4.1.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
+  }
+}
