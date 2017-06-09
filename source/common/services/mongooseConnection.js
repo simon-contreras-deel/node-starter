@@ -1,6 +1,7 @@
 'use strict'
 
 const mongoose = require('mongoose')
+mongoose.Promise = Promise;
 const debug      = require('debug')('app: mongoose')
 const parameters = requireRoot('parameters');
 

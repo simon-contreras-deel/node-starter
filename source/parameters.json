@@ -9,6 +9,18 @@
     },
     "redisConnectionUri": "redis://localhost:32769/0",
     "mongodbConnectionUri" : "mongodb://localhost:32768/auth",
+    "test": {
+        "apps" : {
+            "cms" : {
+                "listenPort": 3010
+            },
+            "api" : {
+                "listenPort": 3011
+            }
+        },
+        "redisConnectionUri": "redis://localhost:32769/1",
+        "mongodbConnectionUri" : "mongodb://localhost:32768/auth-test"
+    },
     "secret": "ohuhyeahhhpassmolon",
     "expressDeliver":{
         "printErrorStack": false,

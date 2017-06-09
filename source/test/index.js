@@ -4,9 +4,22 @@ const Mocha = require('mocha')
 const mocha = new Mocha({})
 const debug = require('debug')('app:test')
 
+//Globals definition
+global.__basedir = __dirname;
+global.requireRoot = function(name) {
+    return require(__dirname + '/../' + name);
+};
+
+const helper = require('./helper')
+
+
+// Clean db
+helper.cleanDb()
+
 // Test suites
 mocha.addFile(__dirname + '/functional/index.js')
 mocha.addFile(__dirname + '/functional/auth.js')
+mocha.addFile(__dirname + '/functional/user.js')
 
 
 mocha.run()

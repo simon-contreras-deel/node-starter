@@ -1,3 +1,5 @@
+'use strict'
+
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt-nodejs')
 const slugify = requireRoot('common/services/slugify')
@@ -12,7 +14,13 @@ const tokenSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, { _id : false });
+
+const profileSchema = new mongoose.Schema({
+    name: String,
+    lastname: String,
+    image: String
+}, { _id : false });
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -34,20 +42,24 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: [
-            'Client', //only read sources
-            'Admin', //manage and give permissions to "Client users" of their own sources
-            'SuperAdmin' //manage and give permissions of all sources. Manage "Admin users"
+            'Client',
+            'SuperAdmin'
         ],
         default: 'Client',
         required: true
     },
     tokens: {
         type: [tokenSchema]
+    },
+    profile: {
+        type: profileSchema
     }
 },
 {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 });
+
 
 userSchema.pre('save', function(next) {
     const user = this;
@@ -90,7 +102,8 @@ userSchema.methods = {
         return {
             email: this.email,
             username: this.username,
-            role: this.role
+            role: this.role,
+            profile: this.profile
         }
     },
     getTokenByDevice: function(device) {

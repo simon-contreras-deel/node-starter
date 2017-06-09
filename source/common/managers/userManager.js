@@ -80,5 +80,28 @@ module.exports = {
             token: token,
             user: user.getPublicInfo()
         };
+    },
+
+    async getProfile(user) {
+        return user.getPublicInfo()
+    },
+
+    async setProfile(user, data) {
+        const name = data.name
+        const lastname = data.lastname
+        const image = data.image
+
+        if(!user.profile)
+            user.profile = {}
+
+        if(name) 
+            user.profile.name = name
+        if(lastname) 
+            user.profile.lastname = lastname
+        if(image) 
+            user.profile.image = image
+
+        user = await user.save()
+        return user.getPublicInfo()
     }
 }

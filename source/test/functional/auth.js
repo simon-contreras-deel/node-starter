@@ -10,15 +10,13 @@ const debug = require('debug')('app:test:functional:auth')
 let validUser
 let validToken
 
-describe('FUNCTIONAL API - Auth', function(){
+describe('FUNCTIONAL API - AUTH', function(){
     it('should response ok (register)',function(done){
         let data = validUser = {
             "email": faker.internet.email().toLowerCase(),
             "password": faker.internet.password(),
             "username": faker.internet.userName().toLowerCase()
         }
-
-        debug(data)
 
         request
             .post('/auth/register')
@@ -28,6 +26,8 @@ describe('FUNCTIONAL API - Auth', function(){
             .end(function(err,res){
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
+                expect(res.body.data).to.have.property('token')
+                expect(res.body.data).to.have.property('user')
                 expect(res.body.data.user.email).to.be.equal(data.email)
                 expect(res.body.data.user.username).to.be.equal(data.username)
                 done()
@@ -93,8 +93,6 @@ describe('FUNCTIONAL API - Auth', function(){
             "password": validUser.password,
         }
 
-        debug(data)
-
         request
             .post('/auth/login')
             .set('X-device', 'aaa')
@@ -116,8 +114,6 @@ describe('FUNCTIONAL API - Auth', function(){
             "username": validUser.username,
             "password": validUser.password,
         }
-
-        debug(data)
 
         request
             .post('/auth/login')

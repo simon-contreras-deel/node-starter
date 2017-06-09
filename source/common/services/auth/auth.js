@@ -21,6 +21,6 @@ module.exports = {
 
         req.user = user;
 
-        return true;
+        next()
     }
 }
