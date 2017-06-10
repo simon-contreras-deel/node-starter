@@ -34,10 +34,10 @@ mongooseConnection.startClient();
 //Initialize web apps
 const expressUtils = requireRoot('common/services/expressUtils');
 
-var runAllapps = !argv.a && !argv.m && !argv.i
+var runAllapps = !argv.a && !argv.c
 
-if (runAllapps || argv.m)
-    exports.mgt = expressUtils.bootstrap('cms');
+if (runAllapps || argv.c)
+    exports.cms = expressUtils.bootstrap('cms');
 
 if (runAllapps || argv.a)
     exports.api = expressUtils.bootstrap('api');

@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-test": "DEBUG=app:test* TEST_MODE=1 nodemon test/index.js",
     "dev": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js",
+    "dev-api": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js -a",
+    "dev-cms": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js -c",
     "lint": "eslint ."
   },
   "author": "",
