@@ -4,7 +4,7 @@
   "description": "Starter project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "TEST_MODE=1 node test/index.js",
     "dev-test": "DEBUG=app:test* TEST_MODE=1 nodemon test/index.js",
     "dev": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js",
     "dev-api": "DEBUG_LEVEL=5 DEBUG=app* nodemon -L --inspect=5858 index.js -a",
