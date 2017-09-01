@@ -7,8 +7,8 @@
             "listenPort": 3001
         }
     },
-    "redisConnectionUri": "redis://localhost:32769/0",
-    "mongodbConnectionUri" : "mongodb://localhost:32768/auth",
+    "redisConnectionUri": "redis://localhost:6379/0",
+    "mongodbConnectionUri" : "mongodb://localhost:27017/auth",
     "test": {
         "apps" : {
             "cms" : {
