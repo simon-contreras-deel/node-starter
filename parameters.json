@@ -18,8 +18,8 @@
                 "listenPort": 3011
             }
         },
-        "redisConnectionUri": "redis://localhost:32769/1",
-        "mongodbConnectionUri" : "mongodb://localhost:32768/auth-test"
+        "redisConnectionUri": "redis://localhost:6379/1",
+        "mongodbConnectionUri" : "mongodb://localhost:27017/auth-test"
     },
     "secret": "ohuhyeahhhpassmolon",
     "expressDeliver":{
