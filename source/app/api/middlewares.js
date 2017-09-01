@@ -8,7 +8,7 @@ const customExceptions = requireRoot('common/services/customExceptions')
 const mongooseConnection = requireRoot('common/services/mongooseConnection');
 const redisConnection = requireRoot('common/services/redisConnection');
 
-const parameters = requireRoot('parameters');
+const parameters = requireRoot('../parameters');
 
 var debug = require('debug')('app:api')
 

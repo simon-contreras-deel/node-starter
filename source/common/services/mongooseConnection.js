@@ -3,7 +3,7 @@
 const mongoose = require('mongoose')
 mongoose.Promise = Promise;
 const debug      = require('debug')('app: mongoose')
-const parameters = requireRoot('parameters');
+const parameters = requireRoot('../parameters');
 
 
 let client;
@@ -57,10 +57,8 @@ function connect(){
         paramsMongodbConnectionUri = parameters.mock.mongodbConnectionUri
 
     mongoose.connect(paramsMongodbConnectionUri,{
-        server:{
-            auto_reconnect: true,
-            socketOptions: { keepAlive: 1 },
-            reconnectTries: Number.MAX_SAFE_INTEGER
-        }
-    });
+        useMongoClient: true,
+        keepAlive: true,
+        reconnectTries: Number.MAX_SAFE_INTEGER
+    })
 }

@@ -14,14 +14,14 @@ var argv = require('yargs')
 //Globals definition
 global.__basedir = __dirname;
 global.requireRoot = function(name) {
-    return require(__dirname + '/' + name);
+    return require(__dirname + '/source/' + name);
 };
 
 //Basic includes
 const debug = require('debug')('app:root');
 const _ = require('lodash');
 debug('init');
-const parameters = requireRoot('parameters');
+const parameters = require('./parameters');
 
 //Start redis connection
 const redisConnection = requireRoot('common/services/redisConnection');
