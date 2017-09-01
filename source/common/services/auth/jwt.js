@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken')
 const moment = require('moment')
 const debug = require('debug')('app:jwt')
-const parameters = requireRoot('parameters');
+const parameters = requireRoot('../parameters');
 const exception = requireRoot('common/services/customExceptions')
 const User = requireRoot('common/models/User')
 

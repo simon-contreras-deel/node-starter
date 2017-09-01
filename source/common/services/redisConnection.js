@@ -3,16 +3,9 @@
 const redis = require('redis')
 const q = require('q')
 const _ = require('lodash')
-const parameters = requireRoot('parameters')
+const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:redis')
 const Promise = require('bluebird')
-
-// Develop
-/*if (_.has(process,'env.REDIS_PORT_6379_TCP_ADDR') && _.has(process,'env.REDIS_PORT_6379_TCP_PORT')) {
-    let url = _.get(process,'env.REDIS_PORT_6379_TCP_ADDR')
-    let port = _.get(process,'env.REDIS_PORT_6379_TCP_PORT')
-    parameters.redisUrl = `redis://${url}:${port}/0`
-}*/
 
 // Promisify redis
 Promise.promisifyAll(redis.RedisClient.prototype)

@@ -1,7 +1,7 @@
 {
-  "name": "auth",
+  "name": "node-starter",
   "version": "0.0.1",
-  "description": "Starter project",
+  "description": "Node starter project",
   "main": "index.js",
   "scripts": {
     "test": "TEST_MODE=1 node test/index.js",
@@ -35,6 +35,7 @@
     "chai": "^4.0.0",
     "faker": "^4.1.0",
     "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
     "supertest": "^3.0.0"
   }
 }

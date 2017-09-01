@@ -7,7 +7,7 @@ const debug = require('debug')('app:test')
 //Globals definition
 global.__basedir = __dirname;
 global.requireRoot = function(name) {
-    return require(__dirname + '/../' + name);
+    return require(__dirname + '/../source/' + name);
 };
 
 const helper = require('./helper')

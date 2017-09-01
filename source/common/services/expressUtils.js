@@ -3,7 +3,7 @@
 const express = require('express');
 const debug   = require('debug')('app:expressUtils');
 
-const parameters = requireRoot('parameters');
+const parameters = requireRoot('../parameters');
 
 const testMode = process.env.TEST_MODE == 1;
 
