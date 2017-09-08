@@ -14,7 +14,8 @@ module.exports = {
                 _id: user._id,
                 username: user.username,
                 role: user.role,
-                device: device
+                device: device,
+                random: Math.floor(Math.random() * 1000000)
             },
             parameters.secret,
             {
