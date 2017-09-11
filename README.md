@@ -8,3 +8,6 @@
 - Double project: api (for frontends) and cms (for admin and content creation). Can work together (npm run dev), only api (npm run dev-api) or only cms (npm run dev-cms)
 - Functional tests with Mocha, Chai and supertest (npm run dev-test)
 - Basic user profile
+
+## Frontend
+Starter frontend in Vue [node-starter-frontend](https://github.com/oleurud/node-starter-frontend)

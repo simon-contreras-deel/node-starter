@@ -14,13 +14,13 @@ const tokenSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-}, { _id : false });
+}, { _id: false });
 
 const profileSchema = new mongoose.Schema({
     name: String,
     lastname: String,
     image: String
-}, { _id : false });
+}, { _id: false });
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -55,27 +55,27 @@ const userSchema = new mongoose.Schema({
         type: profileSchema
     }
 },
-{
-    timestamps: true,
-    versionKey: false
-});
+    {
+        timestamps: true,
+        versionKey: false
+    });
 
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
     const user = this;
-/*
-    if (user.isModified('username')) {
-        user.username = slugify(user.username);
-    }
-*/
+    /*
+        if (user.isModified('username')) {
+            user.username = slugify(user.username);
+        }
+    */
     const SALT_FACTOR = 5;
 
     if (!user.isModified('password')) return next();
 
-    bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
         if (err) return next(err);
 
-        bcrypt.hash(user.password, salt, null, function(err, hash) {
+        bcrypt.hash(user.password, salt, null, function (err, hash) {
             if (err) return next(err);
             user.password = hash;
             next();
@@ -84,9 +84,9 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods = {
-    comparePassword: function(candidatePassword) {
+    comparePassword(candidatePassword) {
         // wrap callback
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
                 if (err || !isMatch) {
                     debug('Password not valid')
@@ -98,7 +98,11 @@ userSchema.methods = {
         })
     },
 
-    getPublicInfo: function() {
+    setPassword(newPassword) {
+        this.password = newPassword
+    },
+
+    getPublicInfo() {
         return {
             email: this.email,
             username: this.username,
@@ -106,33 +110,37 @@ userSchema.methods = {
             profile: this.profile
         }
     },
-    getTokenByDevice: function(device) {
-        for(let i = 0; i < this.tokens.length; i++) {
-            if(this.tokens[i].device == device) {
+
+    getTokenByDevice(device) {
+        for (let i = 0; i < this.tokens.length; i++) {
+            if (this.tokens[i].device == device) {
                 return this.tokens[i];
             }
         }
 
         return false;
     },
-    saveToken: function(token, device) {
+    
+    addToken(token, device) {
         let existingByDevice = false;
-        for(let i = 0; i < this.tokens.length; i++) {
-            if(this.tokens[i].device == device) {
+        for (let i = 0; i < this.tokens.length; i++) {
+            if (this.tokens[i].device == device) {
                 this.tokens[i].token = token;
                 existingByDevice = true;
                 break;
             }
         }
 
-        if(!existingByDevice) {
+        if (!existingByDevice) {
             this.tokens.push({
                 token: token,
                 device: device
             });
         }
+    },
 
-        this.save();
+    removeAllTokens() {
+        this.tokens = []
     }
 };
 

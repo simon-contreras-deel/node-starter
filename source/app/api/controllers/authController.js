@@ -1,6 +1,6 @@
 'use strict';
 
-const userManager = requireRoot('common/managers/userManager')
+const authManager = requireRoot('common/managers/authManager')
 
 module.exports = {
 
@@ -10,7 +10,7 @@ module.exports = {
         const username = req.body.username
         const device = req.device
 
-        return userManager.login(email, username, password, device)
+        return authManager.login(email, username, password, device)
     },
 
     async register(req, res) {
@@ -19,7 +19,15 @@ module.exports = {
         const username = req.body.username
         const device = req.device
 
-        return userManager.register(email, password, username, device)
+        return authManager.register(email, password, username, device)
     },
 
+    async changePassword(req, res) {
+        const email = req.body.email
+        const password = req.body.password
+        const newPassword = req.body.newPassword
+        const device = req.device
+
+        return authManager.changePassword(email, password, newPassword, device)
+    }
 }

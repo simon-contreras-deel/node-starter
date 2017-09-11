@@ -2,6 +2,7 @@
 
 const morgan = require('morgan')
 const helmet = require('helmet')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const expressDeliver = require('express-deliver')
 const customExceptions = requireRoot('common/services/customExceptions')
@@ -22,7 +23,10 @@ module.exports = function(app){
     
     // Disable express header
     app.set('x-powered-by',false)
-    app.set('etag', false);
+    app.set('etag', false)
+
+    // cors
+    app.use(cors())
 
     // Helmet security enabled
     app.use(helmet())

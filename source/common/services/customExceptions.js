@@ -23,20 +23,40 @@ const exceptionPool = new ExceptionPool({
         message:'Token expired',
         statusCode:403
     },
+    ValidationEmail: {
+        code:1005,
+        message:'Invalid email',
+        statusCode:403
+    },
+    ValidationUsername: {
+        code:1006,
+        message:'Invalid username',
+        statusCode:403
+    },
+    ValidationPassword: {
+        code:1007,
+        message:'Invalid password',
+        statusCode:403
+    },
+    ValidationRegistration: {
+        code:1500,
+        message:'something was wrong',
+        statusCode:403
+    },
+    ValidationLogin: {
+        code:1501,
+        message:'Invalid login',
+        statusCode:403
+    },
+    ValidationChangePassword: {
+        code:1502,
+        message:'Invalid change password',
+        statusCode:403
+    },
     DatabaseError: {
         code:2001,
         message:'something was wrong',
         statusCode:500
-    },
-    RegistrationError: {
-        code:3001,
-        message:'something was wrong',
-        statusCode:403
-    },
-    LoginError: {
-        code:3002,
-        message:'Invalid login',
-        statusCode:403
     }
 })
 
