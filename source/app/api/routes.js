@@ -24,7 +24,7 @@ module.exports = function(app){
 
     authRouter.post('/register', authController.register)
     authRouter.post('/login', authController.login)
-    authRouter.post('/change-password', authController.changePassword)    
+    authRouter.post('/change-password', auth.validate, authController.changePassword)    
 
     // User routes
     let userRouter = express.Router({mergeParams:true})

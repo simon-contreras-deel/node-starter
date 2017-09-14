@@ -5,11 +5,11 @@ const moment = require('moment')
 const debug = require('debug')('app:jwt')
 const parameters = requireRoot('../parameters');
 const exception = requireRoot('common/services/customExceptions')
-const User = requireRoot('common/models/User')
+const TYPE = 'JWT '
 
 module.exports = {
     generateAccessToken: (user, device) => {
-        return 'JWT ' + jwt.sign(
+        return TYPE + jwt.sign(
             {
                 _id: user._id,
                 username: user.username,
@@ -25,32 +25,17 @@ module.exports = {
     },
 
     async verify(token, device) {
+        if(!token || token.indexOf(TYPE) !== 0) {
+            throw new exception.ValidationPublicKeyFailed()
+        }
+
         try {
-            var decoded = jwt.verify(token.substring(4), parameters.secret);
-  
-            // expiration
-            if(moment().valueOf() > decoded.exp * 1000) {
-                debug('Token expired')
+            return jwt.verify(token.substring(TYPE.length), parameters.secret)
+        } catch (err) {
+            if(err.name === 'TokenExpiredError') {
                 throw new exception.ValidationTokenExpired()
             }
-
-            let user = await User.findOne({
-                _id: decoded._id,
-                username: decoded.username,
-                role: decoded.role,
-                "tokens.token": token,
-                "tokens.device": device
-            })
-
-            if(!user) {
-                debug('Not user found')
-                throw new exception.ValidationPublicKeyFailed()
-            }
-
-            return user;
             
-        } catch (err) {
-            debug(err)
             throw new exception.ValidationPublicKeyFailed()
         }
     }
