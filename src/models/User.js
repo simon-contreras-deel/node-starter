@@ -1,0 +1,183 @@
+'use strict'
+
+const Sequelize = require('sequelize')
+const bcrypt = require('bcrypt-nodejs')
+const debug = require('debug')('app:Models:User')
+const redis = requireRoot('services/db/redis')
+const base = require('./Base')
+const schemaValidator = require('../services/db/schemaValidator')
+
+function processPassword(user) {
+    const SALT_FACTOR = 5
+
+    return new Promise((resolve, reject) => {
+        bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+            if (err) reject(err)
+
+            bcrypt.hash(user.password, salt, null, function (err, hash) {
+                if (err) reject(err)
+                user.password = hash
+                resolve()
+            })
+        })
+    })
+}
+
+
+module.exports = (sequelize, DataTypes) => {
+    let User = sequelize.define('user', Object.assign({
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        username: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        role: {
+            type: DataTypes.ENUM,
+            values: ['Client', 'SuperAdmin'],
+            defaultValue: 'Client',
+            allowNull: false
+        },
+        profile: {
+            type: DataTypes.JSON,
+            validate: {
+                schema: schemaValidator({
+                    type: "object",
+                    properties: {
+                        name: { type: "string" },
+                        lastname: { type: "string" },
+                        image: { type: "string" }
+                    }
+                })
+            }
+        }
+
+    }, base), {
+        timestamps: true,
+        defaultScope: {
+            where: {
+                removed: false,
+                actived: true
+            }
+        },
+        hooks: {
+            beforeCreate(user, options) {
+                return processPassword(user)
+            },
+
+            beforeUpdate(user, options) {
+                if (user.changed('password')) {
+                    return processPassword(user)
+                }
+            }
+        }
+    })
+
+    /*
+     * INSTANCE METHODS
+     */
+    Object.assign(User.prototype, {
+
+        comparePassword(candidatePassword) {
+            return new Promise((resolve, reject) => {
+                bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+                    if (err || !isMatch) {
+                        resolve(false)
+                    }
+
+                    resolve(true)
+                });
+            })
+        },
+
+        setPassword(password) {
+            this.password = password
+        },
+
+        getPublicInfo() {
+            let publicInfo = {
+                email: this.email,
+                username: this.username,
+                role: this.role
+            }
+
+            if(this.profile)
+                publicInfo.profile = this.profile
+
+            return publicInfo
+        },
+
+        getTokenByDevice(device) {
+            const redisKey = this.id + ':tokens'
+            const redisClient = redis.getClient()
+            return redisClient.getAsync(redisKey).then(tokensString => {
+                const tokens = JSON.parse(tokensString)
+                for (const token of tokens) {
+                    if (token.device == device) {
+                        return token
+                    }
+                }
+
+                return false
+            })
+        },
+
+        addToken(newToken, device) {
+            const redisKey = this.id + ':tokens'
+            const redisClient = redis.getClient()
+            return redisClient.getAsync(redisKey)
+                .then(tokensString => {
+                    let tokens = JSON.parse(tokensString)
+
+                    // add token
+                    let existingToken = false
+
+                    if (!tokens || !tokens.length) {
+                        tokens = []
+                    } else {
+                        for (const token of tokens) {
+                            if (token.device == device) {
+                                token.token = newToken
+                                existingToken = true
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!existingToken) {
+                        tokens.push({
+                            token: newToken,
+                            device: device
+                        })
+                    }
+
+                    return tokens
+                })
+                .then(tokens => {
+                    // save tokens
+                    redisClient.set(redisKey, JSON.stringify(tokens))
+                })
+        },
+
+        removeAllTokens() {
+            const redisKey = this.id + ':tokens'
+            const redisClient = redis.getClient()
+            redisClient.del(redisKey)
+        }
+    })
+
+    return User
+}

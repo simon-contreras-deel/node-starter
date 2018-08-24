@@ -1,10 +1,11 @@
 'use strict';
 
-const jwt = requireRoot('common/services/auth/jwt')
-const User = requireRoot('common/models/User')
+const jwt = requireRoot('services/auth/jwt')
+const User = requireRoot('../appManager').models.User
 const debug = require('debug')('app:usermanager')
+const parameters = requireRoot('../parameters');
 
-const exception = requireRoot('common/services/customExceptions')
+const exception = requireRoot('services/customExceptions')
 
 
 module.exports = {
@@ -14,9 +15,9 @@ module.exports = {
 
         let query
         if (email)
-            query = { email }
+            query = { where: { email } }
         else if (username)
-            query = { username }
+            query = { where: { username } }
 
 
         let user = await User.findOne(query)
@@ -27,10 +28,8 @@ module.exports = {
         }
 
         //generate Token
-        let token = jwt.generateAccessToken(user, device);
+        const token = jwt.generateAccessToken(user, device)
         user.addToken(token, device)
-
-        user.save()
 
         return {
             token: token,
@@ -42,7 +41,10 @@ module.exports = {
         validateRegistration(email, password, username)
 
         //check if email exists
-        let existingUser = await User.findOne({ email: email });
+        let existingUser = await User.findOne({
+            where: { email }
+        })
+
         if (existingUser) {
             throw new exception.ValidationRegistration({
                 error: 'That email address is already in use.'
@@ -50,7 +52,10 @@ module.exports = {
         }
 
         //check if username exists
-        existingUser = await User.findOne({ username: username })
+        existingUser = await User.findOne({
+            where: { username }
+        })
+
         if (existingUser) {
             throw new exception.ValidationRegistration({
                 error: 'That username is already in use.'
@@ -59,45 +64,43 @@ module.exports = {
 
         //valid user
         let user = new User({
-            email: email,
-            password: password,
-            username: username
-        });
-
-        const token = jwt.generateAccessToken(user, device);
-        user.tokens.push({
-            token: token,
-            device: device
-        });
-
+            email,
+            password,
+            username
+        })
         user = await user.save()
+
+        const token = jwt.generateAccessToken(user, device)
+        user.addToken(token, device)
+
         return {
             token: token,
             user: user.getPublicInfo()
-        };
+        }
     },
 
     async changePassword(email, password, newPassword, device) {
         validateChangePassword(email, password, newPassword)
 
-        let user = await User.findOne({ email })
+        let user = await User.findOne({
+            where: { email }
+        })
         if (!user || !await user.comparePassword(password)) {
             throw new exception.ValidationChangePassword({
                 error: "Your login details could not be verified. Please try again."
             })
         }
 
+        // set new password
+        user.setPassword(newPassword)
+        await user.save()
+
         // remove all user tokens
         user.removeAllTokens()
 
-        // set new password
-        user.setPassword(newPassword)
-
-        //generate a new token
+        // generate a new token
         let token = jwt.generateAccessToken(user, device);
         user.addToken(token, device)
-
-        user.save()
 
         return {
             token: token,
@@ -126,9 +129,9 @@ function validateLogin(email, username, password) {
         })
     }
 
-    if(email)
+    if (email)
         validateEmail(email)
-    else if(username)
+    else if (username)
         validateUsername(username)
 
     validatePassword(password)
@@ -144,7 +147,7 @@ function validateChangePassword(email, password, newPassword) {
     validateEmail(email)
     validatePassword(password)
     validatePassword(newPassword)
-}    
+}
 
 function validateEmail(email) {
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)))

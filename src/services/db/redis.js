@@ -2,7 +2,6 @@
 
 const redis = require('redis')
 const q = require('q')
-const _ = require('lodash')
 const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:redis')
 const Promise = require('bluebird')
@@ -10,8 +9,6 @@ const Promise = require('bluebird')
 // Promisify redis
 Promise.promisifyAll(redis.RedisClient.prototype)
 Promise.promisifyAll(redis.Multi.prototype)
-
-let testMode = process.env.TEST_MODE == 1
 
 let client
 
@@ -35,10 +32,9 @@ exports.getClient = function(){
 exports.startClient = function(){
 
     const eventNames = ['ready','connect','reconnecting','error','end','warning']
-    let firstReady = false
-
+    
     //Connection uri
-    const redisUrl = (!testMode) ? parameters.redisConnectionUri : parameters.test.redisConnectionUri
+    const redisUrl = process.env.TEST_MODE ? parameters.test.redisConnectionUri : parameters.redisConnectionUri
 
     //Client initialization
     client = redis.createClient({
@@ -47,23 +43,6 @@ exports.startClient = function(){
             debug('Redis Reconnecting attempt '+options.attempt)
             return Math.min(options.attempt*50,5000)
         }
-    })
-
-    //Client event listening for changes in connection
-    client.on('ready',function(){
-        if (!firstReady)
-            firstReady = true
-        debug('Redis Connected')
-        exports.connected = true
-    })
-
-    client.on('end',function(){
-        debug('Redis Disconnected')
-        exports.connected = false
-    })
-    client.on('error',function(){
-        debug('Redis Error connecting')
-        exports.connected = false
     })
 
     //Clients event debug 
@@ -85,4 +64,6 @@ exports.startClient = function(){
             client[method.toLowerCase()+'Q'] = q.nbind(client[method],client)
         }
     }
+
+    return client
 }

@@ -3,7 +3,7 @@
 const mongoose = require('mongoose')
 mongoose.Promise = Promise;
 const debug      = require('debug')('app: mongoose')
-const parameters = requireRoot('../parameters');
+const parameters = requireRoot('../parameters')
 
 
 let client;
@@ -60,5 +60,5 @@ function connect(){
         useMongoClient: true,
         keepAlive: true,
         reconnectTries: Number.MAX_SAFE_INTEGER
-    })
+    });
 }

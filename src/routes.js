@@ -2,21 +2,21 @@
 
 const express = require('express')
 const expressDeliver = require('express-deliver')
-const exception = requireRoot('common/services/customExceptions')
-const auth = requireRoot('common/services/auth/auth')
+const multer = require('multer')({ dest: '/tmp/uploads/' })
+const exception = requireRoot('services/customExceptions')
+const auth = requireRoot('services/auth/auth')
 
 const mainController = require('./controllers/mainController');
 const authController = require('./controllers/authController');
 const userController = require('./controllers/userController');
 
-
 module.exports = function(app){
 
-    // Main routes
+    // Test routes
     app.get('/', mainController.index)
     app.get('/logged', auth.validate, mainController.logged)
-    
-    
+
+
     // Auth routes
     let authRouter = express.Router({mergeParams:true})
     expressDeliver(authRouter)
@@ -24,7 +24,8 @@ module.exports = function(app){
 
     authRouter.post('/register', authController.register)
     authRouter.post('/login', authController.login)
-    authRouter.post('/change-password', auth.validate, authController.changePassword)    
+    authRouter.post('/change-password', auth.validate, authController.changePassword)
+
 
     // User routes
     let userRouter = express.Router({mergeParams:true})

@@ -1,46 +1,43 @@
 'use strict'
 
-var argv = require('yargs')
-    .alias('h', 'help')
-    .help('h')
-    .alias('c', 'cms')
-    .describe('c', 'Start cms app')
-    .default('c', false)
-    .alias('a', 'api')
-    .describe('a', 'Start api app')
-    .default('a', false)
-    .argv;
-
 //Globals definition
-global.__basedir = __dirname;
-global.requireRoot = function(name) {
-    return require(__dirname + '/source/' + name);
-};
+global.requireRoot = function (name) {
+    return require(__dirname + '/src/' + name);
+}
 
-//Basic includes
-const debug = require('debug')('app:root');
-const _ = require('lodash');
-debug('init');
-const parameters = require('./parameters');
+// Basic includes
+const debug = require('debug')('app:root')
+debug('init')
 
-//Start redis connection
-const redisConnection = requireRoot('common/services/redisConnection');
-redisConnection.startClient();
+// bootstrap express
+const parameters = require('./parameters')
+const express = require('express')
+const app = express()
 
-//Start mongoose connection
-const mongooseConnection = requireRoot('common/services/mongooseConnection');
-mongooseConnection.startClient();
+// AppManager
+const appManager = require('./appManager')
 
-//Initialize web apps
-const expressUtils = requireRoot('common/services/expressUtils');
+// init dbs
+appManager.initDBs()
+appManager.once('appManager:db:ready', () => {
+    require('./src/middlewares')(app)
+    require('./src/routes')(app)
+    require('./src/handlers')(app)
 
-var runAllapps = !argv.a && !argv.c
+    var port = process.env.TEST_MODE ?
+        parameters.test.listenPort :
+        parameters.listenPort;
 
-if (runAllapps || argv.c)
-    exports.cms = expressUtils.bootstrap('cms');
-
-if (runAllapps || argv.a)
-    exports.api = expressUtils.bootstrap('api');
+    // If run in mocha disabled the listen
+    if (!process.env.TEST_MODE) {
+        app.listen(port, function () {
+            debug('App listening ', port)
+            appManager.emit('appManager:app:ready', app)
+        });
+    } else {
+        appManager.emit('appManager:app:ready', app)
+    }
+})
 
 //Simple process log
 process.on('exit', function () {
@@ -49,4 +46,10 @@ process.on('exit', function () {
 process.on('SIGINT', function () {
     debug('sigint');
     process.exit(1);
+});
+
+process.on('uncaughtException', function(err) {
+    if (!process.env.TEST_MODE) {
+        debug('uncaughtException', err);
+    }
 });

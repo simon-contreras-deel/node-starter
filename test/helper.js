@@ -1,9 +1,17 @@
 'use strict'
 
-const User = requireRoot('common/models/User')
+const redis = requireRoot('services/db/redis')
 
 module.exports = {
     async cleanDb(){
-        return await User.remove({})
+        const redisClient = redis.getClient()
+        await redisClient.flushdbAsync()
+
+        const models = requireRoot('../appManager').models
+        for(let modelName in models) {
+            // await models[modelName].destroy({ where: {}})
+        }
+
+        return
     }
 }
