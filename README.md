@@ -7,6 +7,7 @@
 - Postgres and Redis
 - Functional tests with Mocha, Chai and supertest (npm run dev-test)
 - Basic user profile
+- Also, there is a version with [MongoDB, Redis and 2 express apps](https://github.com/oleurud/node-starter/tree/mongo-redis)
 
 ## Frontend
 Starter frontend in Vue [node-starter-frontend](https://github.com/oleurud/node-starter-frontend)
