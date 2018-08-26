@@ -28,7 +28,7 @@ class AppManager extends EventEmitter {
     }
 
     initRedis() {
-        const redisClient = require('./src/services/db/redis').startClient()
+        const redisClient = require('./services/db/redis').startClient()
 
         //Client event listening for changes in connection
         redisClient.on('ready', () => {
@@ -51,7 +51,7 @@ class AppManager extends EventEmitter {
     }
 
     initSequelize() {
-        const sequelize = require('./src/services/db/sequelize')
+        const sequelize = require('./services/db/sequelize')
         sequelize.startClient()
         .then(models => {
             this.models = models

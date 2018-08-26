@@ -15,7 +15,7 @@ const express = require('express')
 const app = express()
 
 // AppManager
-const appManager = require('./appManager')
+const appManager = require('./src/appManager')
 
 // init dbs
 appManager.initDBs()

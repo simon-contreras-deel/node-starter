@@ -1,7 +1,7 @@
 'use strict';
 
 const jwt = requireRoot('services/auth/jwt')
-const User = requireRoot('../appManager').models.User
+const User = requireRoot('./appManager').models.User
 const debug = require('debug')('app:usermanager')
 const parameters = requireRoot('../parameters');
 

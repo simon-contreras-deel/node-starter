@@ -13,7 +13,7 @@ const helper = require('./helper')
 
 // start app
 const appTest = require('../index')
-const appManager = require('../appManager')
+const appManager = require('../src/appManager')
 appManager.on('appManager:app:ready', (app) => {
     global.testApp = app
 

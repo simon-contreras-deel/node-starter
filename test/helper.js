@@ -7,7 +7,7 @@ module.exports = {
         const redisClient = redis.getClient()
         await redisClient.flushdbAsync()
 
-        const models = requireRoot('../appManager').models
+        const models = requireRoot('../src/appManager').models
         for(let modelName in models) {
             // await models[modelName].destroy({ where: {}})
         }

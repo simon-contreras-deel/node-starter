@@ -4,7 +4,7 @@ const jwt = require('./jwt')
 const redis = requireRoot('services/db/redis')
 const redisClient = redis.getClient()
 const exception = requireRoot('services/customExceptions')
-const User = requireRoot('../appManager').models.User
+const User = requireRoot('./appManager').models.User
 
 module.exports = {
 
