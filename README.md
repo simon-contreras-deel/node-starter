@@ -11,8 +11,5 @@
 ## Frontend
 Starter frontend in Vue [node-starter-frontend](https://github.com/oleurud/node-starter-frontend)
 
-## Init
-CREATE USER starter;
-CREATE DATABASE starter;
-alter user starter with encrypted password 'starter';
-grant all privileges on database starter to starter;
+## Initial configuration
+npm run init

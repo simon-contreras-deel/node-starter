@@ -4,6 +4,7 @@
   "description": "Image AI",
   "main": "index.js",
   "scripts": {
+    "init": "./config/db.sh",
     "test": "TEST_MODE=1 DEBUG=app* node test/index.js",
     "dev-test": "TEST_MODE=1 DEBUG=app* nodemon test/index.js",
     "dev": "DEBUG=app* nodemon index.js",

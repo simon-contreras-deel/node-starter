@@ -4,3 +4,4 @@ node_js:
 services:
   - postgres
   - redis-server
+before_install: ./config/db.sh starter_test
