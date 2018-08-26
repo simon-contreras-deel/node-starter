@@ -1,27 +1,26 @@
 {
-    "apps" : {
-        "cms" : {
-            "listenPort": 3000
-        },
-        "api" : {
-            "listenPort": 3001
+    "listenPort": 8000,
+    "redisConnectionUri": "redis://localhost:6379/0",
+    "postgres": {
+        "host": "localhost",
+        "database": "starter",
+        "username": "starter",
+        "password": "starter",
+        "port": 5432
+    },
+    "test": {
+        "listenPort": 8001,
+        "redisConnectionUri": "redis://localhost:6379/1",
+        "postgres": {
+            "host": "localhost",
+            "database": "starter_test",
+            "username": "starter_test",
+            "password": "starter_test",
+            "port": 5432
         }
     },
-    "redisConnectionUri": "redis://localhost:6379/0",
-    "mongodbConnectionUri" : "mongodb://localhost:27017/auth",
-    "test": {
-        "apps" : {
-            "cms" : {
-                "listenPort": 3010
-            },
-            "api" : {
-                "listenPort": 3011
-            }
-        },
-        "redisConnectionUri": "redis://localhost:6379/1",
-        "mongodbConnectionUri" : "mongodb://localhost:27017/auth-test"
-    },
-    "secret": "ohuhyeahhhpassmolon",
+    "secret": "secret",
+    "tokenLife": 86400,
     "expressDeliver":{
         "printErrorStack": false,
         "printInternalErrorData": false

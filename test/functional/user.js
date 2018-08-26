@@ -1,16 +1,17 @@
 'use strict';
 
 const expect = require('chai').expect
-const app = require('../../index').api
+const request = require('supertest').agent(testApp)
 const faker = require('faker')
-const request = require('supertest').agent(app)
-const exception = requireRoot('common/services/customExceptions')
+const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:index')
 
 let validUser
 let validToken
+let validPayment
 
 describe('FUNCTIONAL API - USER', function(){
+
     it('should response ok (register)',function(done){
         let data = validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -44,6 +45,7 @@ describe('FUNCTIONAL API - USER', function(){
             .expect(200)
             .end(function(err,res){
                 expect(err).to.be.null
+                expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
                 expect(res.body.data.username).to.be.equal(validUser.username)
                 expect(res.body.data.role).to.be.equal('Client')
@@ -66,6 +68,7 @@ describe('FUNCTIONAL API - USER', function(){
             .expect(200)
             .end(function(err,res){
                 expect(err).to.be.null
+                expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
                 expect(res.body.data.username).to.be.equal(validUser.username)
                 expect(res.body.data.role).to.be.equal('Client')
@@ -85,6 +88,7 @@ describe('FUNCTIONAL API - USER', function(){
             .expect(200)
             .end(function(err,res){
                 expect(err).to.be.null
+                expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
                 expect(res.body.data.username).to.be.equal(validUser.username)
                 expect(res.body.data.role).to.be.equal('Client')

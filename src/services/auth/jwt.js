@@ -1,17 +1,16 @@
 'use strict'
 
 const jwt = require('jsonwebtoken')
-const moment = require('moment')
 const debug = require('debug')('app:jwt')
 const parameters = requireRoot('../parameters');
-const exception = requireRoot('common/services/customExceptions')
+const exception = requireRoot('services/customExceptions')
 const TYPE = 'JWT '
 
 module.exports = {
     generateAccessToken: (user, device) => {
         return TYPE + jwt.sign(
             {
-                _id: user._id,
+                id: user.id,
                 username: user.username,
                 role: user.role,
                 device: device,
@@ -19,9 +18,9 @@ module.exports = {
             },
             parameters.secret,
             {
-                expiresIn: 24*60*60
+                expiresIn: parameters.tokenLife
             }
-        );
+        )
     },
 
     async verify(token, device) {
@@ -35,7 +34,7 @@ module.exports = {
             if(err.name === 'TokenExpiredError') {
                 throw new exception.ValidationTokenExpired()
             }
-            
+
             throw new exception.ValidationPublicKeyFailed()
         }
     }

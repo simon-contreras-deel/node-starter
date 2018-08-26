@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
 const expect = require('chai').expect
-const app = require('../../index').api
-const request = require('supertest').agent(app)
-const exception = requireRoot('common/services/customExceptions')
+const request = require('supertest').agent(testApp)
+const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:index')
 
 
 describe('FUNCTIONAL API - INDEX', function(){
+
     it('should response ok (status)',function(done){
         request
             .get('/')
@@ -25,7 +25,7 @@ describe('FUNCTIONAL API - INDEX', function(){
 
     it('should response ko (not logged)',function(done){
         let error = new exception.ValidationPublicKeyFailed()
-        
+
         request
             .get('/logged')
             .set('X-device', 'aaa')
@@ -45,7 +45,7 @@ describe('FUNCTIONAL API - INDEX', function(){
 
     it('should response ko (not device header)',function(done){
         let error = new exception.ValidationDeviceFailed()
-        
+
         request
             .get('/')
             .expect(error.statusCode)

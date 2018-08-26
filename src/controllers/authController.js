@@ -1,6 +1,6 @@
 'use strict';
 
-const authManager = requireRoot('common/managers/authManager')
+const authManager = requireRoot('managers/authManager')
 
 module.exports = {
 
@@ -30,4 +30,5 @@ module.exports = {
 
         return authManager.changePassword(email, password, newPassword, device)
     }
+
 }

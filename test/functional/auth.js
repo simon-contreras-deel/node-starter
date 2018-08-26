@@ -1,21 +1,23 @@
 'use strict';
 
 const expect = require('chai').expect
-const app = require('../../index').api
-const request = require('supertest').agent(app)
+const request = require('supertest').agent(testApp)
 const faker = require('faker')
-const exception = requireRoot('common/services/customExceptions')
+const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:auth')
+
 
 let validToken, newValidToken
 let validUser = {
     "email": faker.internet.email().toLowerCase(),
-    "password": faker.internet.password(),
+    "password": faker.internet.password() + faker.internet.password(),
     "username": faker.internet.userName().toLowerCase()
 }
-let newPassword = faker.internet.password()
+let newPassword = faker.internet.password() + faker.internet.password()
+
 
 describe('FUNCTIONAL API - AUTH', function(){
+
     it('should response ko (register invalid email)',function(done){
         let error = new exception.ValidationEmail()
         let data = {
@@ -23,7 +25,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             "password": validUser.password,
             "username": validUser.username
         }
-        
+
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
@@ -49,7 +51,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             "password": 'aaa',
             "username": validUser.username
         }
-        
+
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
@@ -78,7 +80,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             "password": validUser.password,
             "username": 'a'
         }
-        
+
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
@@ -107,7 +109,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             "password": validUser.password,
             "username": '12345678%'
         }
-        
+
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
@@ -136,7 +138,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             "password": validUser.password,
             "username": '1234 5678'
         }
-        
+
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
@@ -379,14 +381,14 @@ describe('FUNCTIONAL API - AUTH', function(){
                         "message": error.message
                     }
                 })
-                
+
                 done()
             })
     })
 
     it('should response ko (change password invalid new password)',function(done){
         let error = new exception.ValidationPassword()
-        
+
         let data = {
             "email": validUser.email,
             "password": validUser.password,
@@ -397,7 +399,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .post('/auth/change-password')
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
-            .send(data)            
+            .send(data)
             .expect(403)
             .end(function(err,res){
                 expect(err).to.be.null
@@ -426,7 +428,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .post('/auth/change-password')
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
-            .send(data)            
+            .send(data)
             .expect(200)
             .end(function(err,res){
                 expect(err).to.be.null
@@ -441,7 +443,7 @@ describe('FUNCTIONAL API - AUTH', function(){
 
     it('should response ko (login using old password)',function(done){
         let error = new exception.ValidationLogin()
-        
+
         let data = {
             "username": validUser.username,
             "password": validUser.password,
@@ -485,12 +487,11 @@ describe('FUNCTIONAL API - AUTH', function(){
                         "message": error.message
                     }
                 })
-                
+
                 done()
             })
-        
-    })
 
+    })
 
     it('should response ok (logged with new token)',function(done){
         request
@@ -503,11 +504,12 @@ describe('FUNCTIONAL API - AUTH', function(){
                 expect(res.body.status).to.be.true
                 done()
             })
-        
+
     })
 
     it('should response ok (login new password)',function(done){
         let data = {
+            // "email": validUser.email,
             "username": validUser.username,
             "password": newPassword,
         }

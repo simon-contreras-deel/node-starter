@@ -5,38 +5,45 @@ const mocha = new Mocha({})
 const debug = require('debug')('app:test')
 
 //Globals definition
-global.__basedir = __dirname;
-global.requireRoot = function(name) {
-    return require(__dirname + '/../source/' + name);
-};
+global.requireRoot = function (name) {
+    return require(__dirname + '/../src/' + name);
+}
 
 const helper = require('./helper')
 
+// start app
+const appTest = require('../index')
+const appManager = require('../src/appManager')
+appManager.on('appManager:app:ready', (app) => {
+    global.testApp = app
 
-// Clean db
-helper.cleanDb()
+    // Test suites
+    mocha.addFile(__dirname + '/functional/index.js')
+    mocha.addFile(__dirname + '/functional/auth.js')
+    mocha.addFile(__dirname + '/functional/user.js')
 
-// Test suites
-mocha.addFile(__dirname + '/functional/index.js')
-mocha.addFile(__dirname + '/functional/auth.js')
-mocha.addFile(__dirname + '/functional/user.js')
+    // run tests
+    mocha.run()
+        .on('test', function (test) {
+        })
+        .on('test end', function (test) {
+        })
+        .on('pass', function (test) {
+        })
+        .on('fail', function (test, err) {
+            if (process.env.NOTIFY == 1) {
+                debug({
+                    'title': test.title,
+                    'message': test.file
+                })
+            }
+        })
+        .on('end', async function () {
+            // Clean db
+            debug('Clean dbs')
+            await helper.cleanDb()
 
+            process.exit()
+        })
 
-mocha.run()
-    .on('test', function(test) {
-    })
-    .on('test end', function(test) {
-    })
-    .on('pass', function(test) {
-    })
-    .on('fail', function(test, err) {
-        if (process.env.NOTIFY == 1) {
-            debug({
-                'title': test.title,
-                'message': test.file
-            });
-        }
-    })
-    .on('end', function() {
-        process.exit()
-    });
+})
