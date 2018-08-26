@@ -1,7 +1,7 @@
 'use strict'
 
 const Sequelize = require('sequelize')
-const bcrypt = require('bcrypt-nodejs')
+const bcrypt = require('bcrypt')
 const debug = require('debug')('app:Models:User')
 const redis = requireRoot('services/db/redis')
 const base = require('./Base')
@@ -14,7 +14,7 @@ function processPassword(user) {
         bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
             if (err) reject(err)
 
-            bcrypt.hash(user.password, salt, null, function (err, hash) {
+            bcrypt.hash(user.password, salt, function (err, hash) {
                 if (err) reject(err)
                 user.password = hash
                 resolve()
