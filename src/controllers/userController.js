@@ -6,11 +6,11 @@ const userManager = requireRoot('managers/userManager')
 module.exports = {
 
     async getProfile(req, res) {
-        return userManager.getProfile(req.user)
+        return userManager.getProfile(res.locals.user)
     },
 
     async setProfile(req, res) {
-        return userManager.setProfile(req.user, req.body)
+        return userManager.setProfile(res.locals.user, req.body)
     }
 
 }
