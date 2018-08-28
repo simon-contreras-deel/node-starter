@@ -32,7 +32,6 @@ appManager.once('appManager:db:ready', () => {
     if (!process.env.TEST_MODE) {
         app.listen(port, function () {
             debug('App listening ', port)
-            appManager.emit('appManager:app:ready', app)
         });
     } else {
         appManager.emit('appManager:app:ready', app)
