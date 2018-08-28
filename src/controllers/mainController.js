@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 module.exports = {
 
-    async index(req,res){
+    async index (req, res) {
         return 'hi'
     },
 
-    async logged(req,res){
+    async logged (req, res) {
         return 'You are logged'
     }
 

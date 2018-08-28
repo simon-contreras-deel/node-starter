@@ -1,19 +1,15 @@
 'use strict'
 
-const morgan = require('morgan')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const expressDeliver = require('express-deliver')
 const customExceptions = requireRoot('services/customExceptions')
-const appManager = requireRoot('./appManager');
+const appManager = requireRoot('./appManager')
 
-const parameters = requireRoot('../parameters');
-
-var debug = require('debug')('app:api')
+const parameters = requireRoot('../parameters')
 
 module.exports = function (app) {
-
     expressDeliver(app, {
         exceptionPool: customExceptions,
         printErrorStack: parameters.expressDeliver.printErrorStack,
@@ -32,10 +28,9 @@ module.exports = function (app) {
 
     // Throw error if no db connection
     app.use(function (req, res, next) {
-        if (!appManager.running)
-            throw new customExceptions.DatabaseError()
-        next();
-    });
+        if (!appManager.running) { throw new customExceptions.DatabaseError() }
+        next()
+    })
 
     // Parses http body
     app.use(bodyParser.urlencoded({ extended: true }))
@@ -45,11 +40,9 @@ module.exports = function (app) {
     app.use(function (req, res, next) {
         let device = req.get('X-device')
 
-        if (!device)
-            throw new customExceptions.ValidationDeviceFailed();
+        if (!device) { throw new customExceptions.ValidationDeviceFailed() }
 
         req.device = device
-        next();
-    });
-
+        next()
+    })
 }

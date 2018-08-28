@@ -1,8 +1,7 @@
 'use strict'
 
 const jwt = require('jsonwebtoken')
-const debug = require('debug')('app:jwt')
-const parameters = requireRoot('../parameters');
+const parameters = requireRoot('../parameters')
 const exception = requireRoot('services/customExceptions')
 const TYPE = 'JWT '
 
@@ -23,15 +22,15 @@ module.exports = {
         )
     },
 
-    async verify(token, device) {
-        if(!token || token.indexOf(TYPE) !== 0) {
+    async verify (token, device) {
+        if (!token || token.indexOf(TYPE) !== 0) {
             throw new exception.ValidationPublicKeyFailed()
         }
 
         try {
             return jwt.verify(token.substring(TYPE.length), parameters.secret)
         } catch (err) {
-            if(err.name === 'TokenExpiredError') {
+            if (err.name === 'TokenExpiredError') {
                 throw new exception.ValidationTokenExpired()
             }
 

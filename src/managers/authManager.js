@@ -1,33 +1,26 @@
-'use strict';
+'use strict'
 
 const jwt = requireRoot('services/auth/jwt')
 const User = requireRoot('./appManager').models.User
-const debug = require('debug')('app:usermanager')
-const parameters = requireRoot('../parameters');
 
 const exception = requireRoot('services/customExceptions')
 
-
 module.exports = {
 
-    async login(email, username, password, device) {
+    async login (email, username, password, device) {
         validateLogin(email, username, password)
 
         let query
-        if (email)
-            query = { where: { email } }
-        else if (username)
-            query = { where: { username } }
-
+        if (email) { query = { where: { email } } } else if (username) { query = { where: { username } } }
 
         let user = await User.findOne(query)
         if (!user || !await user.comparePassword(password)) {
             throw new exception.ValidationLogin({
-                error: "Your login details could not be verified. Please try again."
+                error: 'Your login details could not be verified. Please try again.'
             })
         }
 
-        //generate Token
+        // generate Token
         const token = jwt.generateAccessToken(user, device)
         user.addToken(token, device)
 
@@ -37,10 +30,10 @@ module.exports = {
         }
     },
 
-    async register(email, password, username, device) {
+    async register (email, password, username, device) {
         validateRegistration(email, password, username)
 
-        //check if email exists
+        // check if email exists
         let existingUser = await User.findOne({
             where: { email }
         })
@@ -51,7 +44,7 @@ module.exports = {
             })
         }
 
-        //check if username exists
+        // check if username exists
         existingUser = await User.findOne({
             where: { username }
         })
@@ -62,7 +55,7 @@ module.exports = {
             })
         }
 
-        //valid user
+        // valid user
         let user = new User({
             email,
             password,
@@ -79,7 +72,7 @@ module.exports = {
         }
     },
 
-    async changePassword(email, password, newPassword, device) {
+    async changePassword (email, password, newPassword, device) {
         validateChangePassword(email, password, newPassword)
 
         let user = await User.findOne({
@@ -87,7 +80,7 @@ module.exports = {
         })
         if (!user || !await user.comparePassword(password)) {
             throw new exception.ValidationChangePassword({
-                error: "Your login details could not be verified. Please try again."
+                error: 'Your login details could not be verified. Please try again.'
             })
         }
 
@@ -99,7 +92,7 @@ module.exports = {
         user.removeAllTokens()
 
         // generate a new token
-        let token = jwt.generateAccessToken(user, device);
+        let token = jwt.generateAccessToken(user, device)
         user.addToken(token, device)
 
         return {
@@ -109,11 +102,10 @@ module.exports = {
     }
 }
 
-
-function validateRegistration(email, password, username) {
+function validateRegistration (email, password, username) {
     if (!email || !password || !username) {
         throw new exception.ValidationRegistration({
-            error: "You must set email, password and username."
+            error: 'You must set email, password and username.'
         })
     }
 
@@ -122,25 +114,22 @@ function validateRegistration(email, password, username) {
     validatePassword(password)
 }
 
-function validateLogin(email, username, password) {
+function validateLogin (email, username, password) {
     if ((!email && !username) || !password) {
         throw new exception.ValidationLogin({
-            error: "Your login details could not be verified. Please try again."
+            error: 'Your login details could not be verified. Please try again.'
         })
     }
 
-    if (email)
-        validateEmail(email)
-    else if (username)
-        validateUsername(username)
+    if (email) { validateEmail(email) } else if (username) { validateUsername(username) }
 
     validatePassword(password)
 }
 
-function validateChangePassword(email, password, newPassword) {
+function validateChangePassword (email, password, newPassword) {
     if (!email || !password || !newPassword) {
         throw new exception.ValidationChangePassword({
-            error: "Your login details could not be verified. Please try again."
+            error: 'Your login details could not be verified. Please try again.'
         })
     }
 
@@ -149,15 +138,14 @@ function validateChangePassword(email, password, newPassword) {
     validatePassword(newPassword)
 }
 
-function validateEmail(email) {
-    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)))
-        throw new exception.ValidationEmail()
+function validateEmail (email) {
+    if (!(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/.test(email))) { throw new exception.ValidationEmail() }
 }
 
-function validateUsername(username) {
+function validateUsername (username) {
     if (username.length < 4) {
         throw new exception.ValidationUsername({
-            error: "You must set 3 or more characters for username."
+            error: 'You must set 3 or more characters for username.'
         })
     }
 
@@ -168,10 +156,10 @@ function validateUsername(username) {
     }
 }
 
-function validatePassword(password) {
+function validatePassword (password) {
     if (password.length < 8) {
         throw new exception.ValidationPassword({
-            error: "You must set 8 or more characters for password."
+            error: 'You must set 8 or more characters for password.'
         })
     }
 }

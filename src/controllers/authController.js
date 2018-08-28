@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
 const authManager = requireRoot('managers/authManager')
 
 module.exports = {
 
-    async login(req, res) {
+    async login (req, res) {
         const email = req.body.email
         const password = req.body.password
         const username = req.body.username
@@ -13,7 +13,7 @@ module.exports = {
         return authManager.login(email, username, password, device)
     },
 
-    async register(req, res) {
+    async register (req, res) {
         const email = req.body.email
         const password = req.body.password
         const username = req.body.username
@@ -22,7 +22,7 @@ module.exports = {
         return authManager.register(email, password, username, device)
     },
 
-    async changePassword(req, res) {
+    async changePassword (req, res) {
         const email = req.body.email
         const password = req.body.password
         const newPassword = req.body.newPassword

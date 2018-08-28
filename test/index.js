@@ -1,12 +1,13 @@
 'use strict'
 
+const path = require('path')
 const Mocha = require('mocha')
 const mocha = new Mocha({})
 const debug = require('debug')('app:test')
 
-//Globals definition
+// Globals definition
 global.requireRoot = function (name) {
-    return require(__dirname + '/../src/' + name);
+    return require(path.resolve('src/', name))
 }
 
 const helper = require('./helper')
@@ -18,9 +19,9 @@ appManager.on('appManager:app:ready', (app) => {
     global.testApp = app
 
     // Test suites
-    mocha.addFile(__dirname + '/functional/index.js')
-    mocha.addFile(__dirname + '/functional/auth.js')
-    mocha.addFile(__dirname + '/functional/user.js')
+    mocha.addFile(path.resolve('test/functional/index.js'))
+    mocha.addFile(path.resolve('test/functional/auth.js'))
+    mocha.addFile(path.resolve('test/functional/user.js'))
 
     // run tests
     mocha.run()
@@ -31,7 +32,7 @@ appManager.on('appManager:app:ready', (app) => {
         .on('pass', function (test) {
         })
         .on('fail', function (test, err) {
-            if (process.env.NOTIFY == 1) {
+            if (process.env.NOTIFY === 1) {
                 debug({
                     'title': test.title,
                     'message': test.file
@@ -45,5 +46,4 @@ appManager.on('appManager:app:ready', (app) => {
 
             process.exit()
         })
-
 })

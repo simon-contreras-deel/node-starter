@@ -1,7 +1,6 @@
 'use strict'
 
 const redis = require('redis')
-const q = require('q')
 const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:redis')
 const Promise = require('bluebird')
@@ -16,37 +15,33 @@ let client
  * Get redis client
  * @return {RedisClient}
  */
-exports.getClient = function(){
+exports.getClient = function () {
     return client
 }
 
 /**
  * Starts the connection with Redis
  */
-exports.startClient = function(){
+exports.startClient = function () {
+    const eventNames = ['ready', 'connect', 'reconnecting', 'error', 'end', 'warning']
 
-    const eventNames = ['ready','connect','reconnecting','error','end','warning']
-
-    //Connection uri
+    // Connection uri
     const redisUrl = process.env.TEST_MODE ? parameters.test.redisConnectionUri : parameters.redisConnectionUri
 
-    //Client initialization
+    // Client initialization
     client = redis.createClient({
-        url : redisUrl,
+        url: redisUrl,
         retry_strategy: function (options) {
-            debug('Redis Reconnecting attempt '+ options.attempt)
-            return Math.min(options.attempt*50,5000)
+            debug('Redis Reconnecting attempt ' + options.attempt)
+            return Math.min(options.attempt * 50, 5000)
         }
     })
 
-    //Clients event debug
-    if (debug.enabled){
-        eventNames.forEach(function(eventName){
-            client.on(eventName,function(e){
-                if (e)
-                    debug(eventName,e)
-                else
-                    debug(eventName)
+    // Clients event debug
+    if (debug.enabled) {
+        eventNames.forEach(function (eventName) {
+            client.on(eventName, function (e) {
+                if (e) { debug(eventName, e) } else { debug(eventName) }
             })
         })
     }

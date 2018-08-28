@@ -3,15 +3,14 @@
 const redis = requireRoot('services/db/redis')
 
 module.exports = {
-    async cleanDb(){
+    async cleanDb () {
         const redisClient = redis.getClient()
         await redisClient.flushdbAsync()
 
         const models = requireRoot('../src/appManager').models
-        for(let modelName in models) {
-            // await models[modelName].destroy({ where: {}})
+        // TODO: sequelize
+        for (let modelName in models) {
+            await models[modelName].destroy({ where: {}})
         }
-
-        return
     }
 }

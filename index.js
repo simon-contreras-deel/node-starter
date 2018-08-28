@@ -1,8 +1,9 @@
 'use strict'
+const path = require('path')
 
-//Globals definition
+// globals definition
 global.requireRoot = function (name) {
-    return require(__dirname + '/src/' + name);
+    return require(path.resolve('src/', name))
 }
 
 // Basic includes
@@ -24,31 +25,32 @@ appManager.once('appManager:db:ready', () => {
     require('./src/routes')(app)
     require('./src/handlers')(app)
 
-    var port = process.env.TEST_MODE ?
-        parameters.test.listenPort :
-        parameters.listenPort;
+    var port = process.env.TEST_MODE
+        ? parameters.test.listenPort
+        : parameters.listenPort
+
 
     // If run in mocha disabled the listen
     if (!process.env.TEST_MODE) {
         app.listen(port, function () {
             debug('App listening ', port)
-        });
+        })
     } else {
         appManager.emit('appManager:app:ready', app)
     }
 })
 
-//Simple process log
+// Simple process log
 process.on('exit', function () {
-    debug('exit');
-});
+    debug('exit')
+})
 process.on('SIGINT', function () {
-    debug('sigint');
-    process.exit(1);
-});
+    debug('sigint')
+    process.exit(1)
+})
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     if (!process.env.TEST_MODE) {
-        debug('uncaughtException', err);
+        debug('uncaughtException', err)
     }
-});
+})

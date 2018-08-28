@@ -1,21 +1,18 @@
-'use strict';
+'use strict'
 
 const expect = require('chai').expect
 const request = require('supertest').agent(testApp)
 const faker = require('faker')
-const exception = requireRoot('services/customExceptions')
-const debug = require('debug')('app:test:functional:index')
 
 let validUser
 let validToken
 
-describe('FUNCTIONAL API - USER', function(){
-
-    it('should response ok (register)',function(done){
+describe('FUNCTIONAL API - USER', function () {
+    it('should response ok (register)', function (done) {
         let data = validUser = {
-            "email": faker.internet.email().toLowerCase(),
-            "password": faker.internet.password(),
-            "username": faker.internet.userName().toLowerCase()
+            'email': faker.internet.email().toLowerCase(),
+            'password': faker.internet.password(),
+            'username': faker.internet.userName().toLowerCase()
         }
 
         request
@@ -23,7 +20,7 @@ describe('FUNCTIONAL API - USER', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data).to.have.property('token')
@@ -36,13 +33,13 @@ describe('FUNCTIONAL API - USER', function(){
             })
     })
 
-    it('should response ok (profile)',function(done){
+    it('should response ok (profile)', function (done) {
         request
             .get('/user')
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
@@ -52,11 +49,11 @@ describe('FUNCTIONAL API - USER', function(){
             })
     })
 
-    it('should response ok (set profile)',function(done){
+    it('should response ok (set profile)', function (done) {
         let data = {
-            "name": faker.name.firstName(),
-            "lastname": faker.name.lastName(),
-            "image": faker.internet.userName()
+            'name': faker.name.firstName(),
+            'lastname': faker.name.lastName(),
+            'image': faker.internet.userName()
         }
 
         request
@@ -65,7 +62,7 @@ describe('FUNCTIONAL API - USER', function(){
             .set('Authorization', validToken)
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
@@ -79,13 +76,13 @@ describe('FUNCTIONAL API - USER', function(){
             })
     })
 
-    it('should response ok (check profile updated)',function(done){
+    it('should response ok (check profile updated)', function (done) {
         request
             .get('/user')
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.email).to.be.equal(validUser.email)
@@ -98,5 +95,4 @@ describe('FUNCTIONAL API - USER', function(){
                 done()
             })
     })
-
 })

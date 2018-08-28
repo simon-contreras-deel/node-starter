@@ -5,7 +5,7 @@ const redis = requireRoot('services/db/redis')
 const base = require('./_Base')
 const schemaValidator = require('../services/db/schemaValidator')
 
-function processPassword(user) {
+function processPassword (user) {
     const SALT_FACTOR = 5
 
     return new Promise((resolve, reject) => {
@@ -20,7 +20,6 @@ function processPassword(user) {
         })
     })
 }
-
 
 module.exports = (sequelize, DataTypes) => {
     let User = sequelize.define('user', Object.assign({
@@ -53,11 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             validate: {
                 schema: schemaValidator({
-                    type: "object",
+                    type: 'object',
                     properties: {
-                        name: { type: "string" },
-                        lastname: { type: "string" },
-                        image: { type: "string" }
+                        name: { type: 'string' },
+                        lastname: { type: 'string' },
+                        image: { type: 'string' }
                     }
                 })
             }
@@ -72,11 +71,11 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         hooks: {
-            beforeCreate(user, options) {
+            beforeCreate (user, options) {
                 return processPassword(user)
             },
 
-            beforeUpdate(user, options) {
+            beforeUpdate (user, options) {
                 if (user.changed('password')) {
                     return processPassword(user)
                 }
@@ -89,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     Object.assign(User.prototype, {
 
-        comparePassword(candidatePassword) {
+        comparePassword (candidatePassword) {
             return new Promise((resolve, reject) => {
                 bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
                     if (err || !isMatch) {
@@ -97,34 +96,33 @@ module.exports = (sequelize, DataTypes) => {
                     }
 
                     resolve(true)
-                });
+                })
             })
         },
 
-        setPassword(password) {
+        setPassword (password) {
             this.password = password
         },
 
-        getPublicInfo() {
+        getPublicInfo () {
             let publicInfo = {
                 email: this.email,
                 username: this.username,
                 role: this.role
             }
 
-            if(this.profile)
-                publicInfo.profile = this.profile
+            if (this.profile) { publicInfo.profile = this.profile }
 
             return publicInfo
         },
 
-        getTokenByDevice(device) {
+        getTokenByDevice (device) {
             const redisKey = this.id + ':tokens'
             const redisClient = redis.getClient()
             return redisClient.getAsync(redisKey).then(tokensString => {
                 const tokens = JSON.parse(tokensString)
                 for (const token of tokens) {
-                    if (token.device == device) {
+                    if (token.device === device) {
                         return token
                     }
                 }
@@ -133,7 +131,7 @@ module.exports = (sequelize, DataTypes) => {
             })
         },
 
-        addToken(newToken, device) {
+        addToken (newToken, device) {
             const redisKey = this.id + ':tokens'
             const redisClient = redis.getClient()
             return redisClient.getAsync(redisKey)
@@ -147,10 +145,10 @@ module.exports = (sequelize, DataTypes) => {
                         tokens = []
                     } else {
                         for (const token of tokens) {
-                            if (token.device == device) {
+                            if (token.device === device) {
                                 token.token = newToken
                                 existingToken = true
-                                break;
+                                break
                             }
                         }
                     }
@@ -170,7 +168,7 @@ module.exports = (sequelize, DataTypes) => {
                 })
         },
 
-        removeAllTokens() {
+        removeAllTokens () {
             const redisKey = this.id + ':tokens'
             const redisClient = redis.getClient()
             redisClient.del(redisKey)

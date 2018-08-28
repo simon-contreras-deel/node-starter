@@ -8,7 +8,7 @@ const User = requireRoot('./appManager').models.User
 
 module.exports = {
 
-    async validate(req, res, next) {
+    async validate (req, res, next) {
         const token = req.get('Authorization')
 
         // verify token
@@ -48,7 +48,7 @@ module.exports = {
     }
 }
 
-function verifyInRedis(tokenReceived, userId, device) {
+function verifyInRedis (tokenReceived, userId, device) {
     const redisKey = userId + ':tokens'
 
     return redisClient.getAsync(redisKey).then(tokensString => {
@@ -60,9 +60,9 @@ function verifyInRedis(tokenReceived, userId, device) {
             let existingToken = false
 
             for (const token of tokens) {
-                if (token.token == tokenReceived && token.device == device) {
+                if (token.token === tokenReceived && token.device === device) {
                     existingToken = true
-                    break;
+                    break
                 }
             }
 

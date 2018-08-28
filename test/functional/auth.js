@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const expect = require('chai').expect
 const request = require('supertest').agent(testApp)
@@ -6,24 +6,21 @@ const faker = require('faker')
 const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:auth')
 
-
 let validToken, newValidToken
 let validUser = {
-    "email": faker.internet.email().toLowerCase(),
-    "password": faker.internet.password() + faker.internet.password(),
-    "username": faker.internet.userName().toLowerCase()
+    'email': faker.internet.email().toLowerCase(),
+    'password': faker.internet.password() + faker.internet.password(),
+    'username': faker.internet.userName().toLowerCase()
 }
 let newPassword = faker.internet.password() + faker.internet.password()
 
-
-describe('FUNCTIONAL API - AUTH', function(){
-
-    it('should response ko (register invalid email)',function(done){
+describe('FUNCTIONAL API - AUTH', function () {
+    it('should response ko (register invalid email)', function (done) {
         let error = new exception.ValidationEmail()
         let data = {
-            "email": faker.internet.userName().toLowerCase(),
-            "password": validUser.password,
-            "username": validUser.username
+            'email': faker.internet.userName().toLowerCase(),
+            'password': validUser.password,
+            'username': validUser.username
         }
 
         request
@@ -31,25 +28,25 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message
                     }
                 })
                 done()
             })
     })
 
-    it('should response ko (register invalid password length)',function(done){
+    it('should response ko (register invalid password length)', function (done) {
         let error = new exception.ValidationPassword()
         let data = {
-            "email": validUser.email,
-            "password": 'aaa',
-            "username": validUser.username
+            'email': validUser.email,
+            'password': 'aaa',
+            'username': validUser.username
         }
 
         request
@@ -57,15 +54,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "You must set 8 or more characters for password."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'You must set 8 or more characters for password.'
                         }
                     }
                 })
@@ -73,12 +70,12 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (register invalid username length)',function(done){
+    it('should response ko (register invalid username length)', function (done) {
         let error = new exception.ValidationUsername()
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
-            "username": 'a'
+            'email': validUser.email,
+            'password': validUser.password,
+            'username': 'a'
         }
 
         request
@@ -86,15 +83,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "You must set 3 or more characters for username."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'You must set 3 or more characters for username.'
                         }
                     }
                 })
@@ -102,12 +99,12 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (register invalid char % in username)',function(done){
+    it('should response ko (register invalid char % in username)', function (done) {
         let error = new exception.ValidationUsername()
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
-            "username": '12345678%'
+            'email': validUser.email,
+            'password': validUser.password,
+            'username': '12345678%'
         }
 
         request
@@ -115,15 +112,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "The username must have numbers, letters, '-', '.' and '_'"
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': "The username must have numbers, letters, '-', '.' and '_'"
                         }
                     }
                 })
@@ -131,12 +128,12 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (register invalid espace in username)',function(done){
+    it('should response ko (register invalid espace in username)', function (done) {
         let error = new exception.ValidationUsername()
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
-            "username": '1234 5678'
+            'email': validUser.email,
+            'password': validUser.password,
+            'username': '1234 5678'
         }
 
         request
@@ -144,15 +141,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "The username must have numbers, letters, '-', '.' and '_'"
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': "The username must have numbers, letters, '-', '.' and '_'"
                         }
                     }
                 })
@@ -160,13 +157,13 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ok (register)',function(done){
+    it('should response ok (register)', function (done) {
         request
             .post('/auth/register')
             .set('X-device', 'aaa')
             .send(validUser)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data).to.have.property('token')
@@ -177,7 +174,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (register email already exist)',function(done){
+    it('should response ko (register email already exist)', function (done) {
         let error = new exception.ValidationRegistration()
 
         request
@@ -185,15 +182,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(validUser)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "That email address is already in use."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'That email address is already in use.'
                         }
                     }
                 })
@@ -201,12 +198,12 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (register username already exist)',function(done){
+    it('should response ko (register username already exist)', function (done) {
         let error = new exception.ValidationRegistration()
         let data = {
-            "email": faker.internet.email().toLowerCase(),
-            "password": validUser.password,
-            "username": validUser.username
+            'email': faker.internet.email().toLowerCase(),
+            'password': validUser.password,
+            'username': validUser.username
         }
 
         request
@@ -214,15 +211,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "That username is already in use."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'That username is already in use.'
                         }
                     }
                 })
@@ -230,10 +227,10 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ok (login with email)',function(done){
+    it('should response ok (login with email)', function (done) {
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
+            'email': validUser.email,
+            'password': validUser.password
         }
 
         request
@@ -241,7 +238,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.user.email).to.be.equal(validUser.email)
@@ -252,10 +249,10 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ok (login with username)',function(done){
+    it('should response ok (login with username)', function (done) {
         let data = {
-            "username": validUser.username,
-            "password": validUser.password,
+            'username': validUser.username,
+            'password': validUser.password
         }
 
         request
@@ -263,7 +260,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.user.email).to.be.equal(validUser.email)
@@ -274,11 +271,11 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (login invalid password)',function(done){
+    it('should response ko (login invalid password)', function (done) {
         let error = new exception.ValidationLogin()
         let data = {
-            "email": validUser.email,
-            "password": faker.internet.password(),
+            'email': validUser.email,
+            'password': faker.internet.password()
         }
 
         request
@@ -286,15 +283,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "Your login details could not be verified. Please try again."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'Your login details could not be verified. Please try again.'
                         }
                     }
                 })
@@ -302,11 +299,11 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (login invalid empty username and password)',function(done){
+    it('should response ko (login invalid empty username and password)', function (done) {
         let error = new exception.ValidationLogin()
         let data = {
-            "email": '',
-            "password": '',
+            'email': '',
+            'password': ''
         }
 
         request
@@ -314,15 +311,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "Your login details could not be verified. Please try again."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'Your login details could not be verified. Please try again.'
                         }
                     }
                 })
@@ -330,20 +327,20 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ok (logged)',function(done){
+    it('should response ok (logged)', function (done) {
         request
             .get('/logged')
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 done()
             })
     })
 
-    it('should response ko (logged with invalid token)',function(done){
+    it('should response ko (logged with invalid token)', function (done) {
         let error = new exception.ValidationPublicKeyFailed()
 
         request
@@ -351,20 +348,20 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .set('Authorization', validToken + 'aaa')
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message
                     }
                 })
                 done()
             })
     })
 
-    it('should response ko (logged with invalid device)',function(done){
+    it('should response ko (logged with invalid device)', function (done) {
         let error = new exception.ValidationPublicKeyFailed()
 
         request
@@ -372,13 +369,13 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'bbb')
             .set('Authorization', validToken)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message
                     }
                 })
 
@@ -386,13 +383,13 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (change password invalid new password)',function(done){
+    it('should response ko (change password invalid new password)', function (done) {
         let error = new exception.ValidationPassword()
 
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
-            "newPassword": 'aaa'
+            'email': validUser.email,
+            'password': validUser.password,
+            'newPassword': 'aaa'
         }
 
         request
@@ -401,15 +398,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('Authorization', validToken)
             .send(data)
             .expect(403)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "You must set 8 or more characters for password."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'You must set 8 or more characters for password.'
                         }
                     }
                 })
@@ -417,11 +414,11 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ok (change password)',function(done){
+    it('should response ok (change password)', function (done) {
         let data = {
-            "email": validUser.email,
-            "password": validUser.password,
-            "newPassword": newPassword
+            'email': validUser.email,
+            'password': validUser.password,
+            'newPassword': newPassword
         }
 
         request
@@ -430,7 +427,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('Authorization', validToken)
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.user.email).to.be.equal(validUser.email)
@@ -441,12 +438,12 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (login using old password)',function(done){
+    it('should response ko (login using old password)', function (done) {
         let error = new exception.ValidationLogin()
 
         let data = {
-            "username": validUser.username,
-            "password": validUser.password,
+            'username': validUser.username,
+            'password': validUser.password
         }
 
         request
@@ -454,15 +451,15 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message,
-                        "data": {
-                            "error": "Your login details could not be verified. Please try again."
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message,
+                        'data': {
+                            'error': 'Your login details could not be verified. Please try again.'
                         }
                     }
                 })
@@ -470,7 +467,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             })
     })
 
-    it('should response ko (logged with old token)',function(done){
+    it('should response ko (logged with old token)', function (done) {
         let error = new exception.ValidationPublicKeyFailed()
 
         request
@@ -478,40 +475,38 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(error.statusCode)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body).to.deep.equal({
-                    "status": false,
-                    "error": {
-                        "code": error.code,
-                        "message": error.message
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message
                     }
                 })
 
                 done()
             })
-
     })
 
-    it('should response ok (logged with new token)',function(done){
+    it('should response ok (logged with new token)', function (done) {
         request
             .get('/logged')
             .set('X-device', 'aaa')
             .set('Authorization', newValidToken)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 done()
             })
-
     })
 
-    it('should response ok (login new password)',function(done){
+    it('should response ok (login new password)', function (done) {
         let data = {
             // "email": validUser.email,
-            "username": validUser.username,
-            "password": newPassword,
+            'username': validUser.username,
+            'password': newPassword
         }
 
         request
@@ -519,7 +514,7 @@ describe('FUNCTIONAL API - AUTH', function(){
             .set('X-device', 'aaa')
             .send(data)
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
                 expect(err).to.be.null
                 expect(res.body.status).to.be.true
                 expect(res.body.data.user.email).to.be.equal(validUser.email)
