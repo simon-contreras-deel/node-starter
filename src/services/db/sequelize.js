@@ -1,8 +1,8 @@
+const fs = require('fs')
 const Sequelize = require('sequelize')
 const { Client } = require('pg')
 const debug = require('debug')('app:sequelize')
 const parameters = requireRoot('../parameters')
-
 
 function initConnection() {
     if(process.env.TEST_MODE) {
@@ -23,14 +23,20 @@ function initConnection() {
     })
 }
 
-function initModels(sequelize) {
-    const modelNames = [
-        'User'
-    ]
+async function initModels(sequelize) {
+    const MODELS_PATH = __dirname + '/../../models/';
+
+    const modelNames = fs.readdirSync(MODELS_PATH)
+        .map(file => {
+            if (file[0] !== '_') {
+                return file.substring(0, file.lastIndexOf('.'))
+            }
+        })
+        .filter(file => file)
 
     const models = {}
     modelNames.forEach(function (modelName) {
-        const model = sequelize.import(__dirname + '/../../models/' + modelName)
+        const model = sequelize.import(MODELS_PATH + modelName)
         models[modelName] = model
     })
 
@@ -57,7 +63,7 @@ function createDb() {
     return new Promise((resolve, reject) => {
         client.connect()
 
-        const query = 'CREATE DATABASE ' + parameters.postgres.database + ' WITH ENCODING=\'UTF8\' OWNER =  postgres '
+        const query = `CREATE DATABASE ${parameters.postgres.database} WITH ENCODING=\'UTF8\' OWNER = ${parameters.postgres.username}`
         client.query(query, err => {
             if (err) {
                 reject('Error creating database: ' + err.message)
@@ -83,9 +89,9 @@ function isConnected(sequelize) {
         })
 }
 
-function startClient() {
+async function startClient() {
     const sequelize = initConnection()
-    const models = initModels(sequelize)
+    const models = await initModels(sequelize)
 
     return isConnected(sequelize)
     .then(status => {
