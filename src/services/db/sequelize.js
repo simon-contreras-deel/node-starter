@@ -1,6 +1,5 @@
 const fs = require('fs')
 const Sequelize = require('sequelize')
-const { Client } = require('pg')
 const debug = require('debug')('app:sequelize')
 const parameters = requireRoot('../parameters')
 
@@ -16,7 +15,7 @@ function initConnection() {
         logging: false,
 
         pool: {
-            max: 5,
+            max: 16,
             min: 0,
             idle: 10000
         }
@@ -49,43 +48,12 @@ async function initModels(sequelize) {
     return models
 }
 
-function createDb() {
-    debug('Creating database "' + parameters.postgres.database + '"')
-
-    var client = new Client({
-        user: parameters.postgres.username,
-        host: parameters.postgres.host,
-        database: 'postgres',
-        password: parameters.postgres.password,
-        port: parameters.postgres.port,
-    })
-
-    return new Promise((resolve, reject) => {
-        client.connect()
-
-        const query = `CREATE DATABASE ${parameters.postgres.database} WITH ENCODING=\'UTF8\' OWNER = ${parameters.postgres.username}`
-        client.query(query, err => {
-            if (err) {
-                reject('Error creating database: ' + err.message)
-            }
-
-            client.end()
-            resolve()
-        })
-    })
-}
-
 function isConnected(sequelize) {
     return sequelize.authenticate()
         .then(() => true)
         .catch(err => {
-            if (err.name == 'SequelizeConnectionError' && err.message == 'database "' + parameters.postgres.database + '" does not exist') {
-                return createDb()
-                    .then(() => startClient())
-                    .catch(err => { throw err })
-            } else {
-                throw err
-            }
+            debug('Connection error')
+            throw err
         })
 }
 
@@ -103,7 +71,7 @@ async function startClient() {
                 return models
             })
             .catch(err => {
-                debug('error')
+                debug('sync error')
             })
     })
     .catch(err => {
