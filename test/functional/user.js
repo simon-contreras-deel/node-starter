@@ -8,7 +8,6 @@ const debug = require('debug')('app:test:functional:index')
 
 let validUser
 let validToken
-let validPayment
 
 describe('FUNCTIONAL API - USER', function(){
 
