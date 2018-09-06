@@ -40,6 +40,6 @@
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
-    "supertest": "^3.0.0"
+    "supertest": "^3.2.0"
   }
 }
