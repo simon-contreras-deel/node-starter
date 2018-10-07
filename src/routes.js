@@ -14,7 +14,7 @@ module.exports = function (app) {
     app.get('/logged', auth.validate, mainController.logged)
 
     // Auth routes
-    let authRouter = express.Router({mergeParams: true})
+    let authRouter = express.Router({ mergeParams: true })
     expressDeliver(authRouter)
     app.use('/auth', authRouter)
 
@@ -23,7 +23,7 @@ module.exports = function (app) {
     authRouter.post('/change-password', auth.validate, authController.changePassword)
 
     // User routes
-    let userRouter = express.Router({mergeParams: true})
+    let userRouter = express.Router({ mergeParams: true })
     expressDeliver(userRouter)
     app.use('/user', userRouter)
 
