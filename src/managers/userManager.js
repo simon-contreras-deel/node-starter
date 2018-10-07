@@ -17,7 +17,7 @@ module.exports = {
         if (lastname) { profile.lastname = lastname }
         if (image) { profile.image = image }
 
-        await user.update({profile})
+        await user.update({ profile })
         return user.getPublicInfo()
     }
 }
