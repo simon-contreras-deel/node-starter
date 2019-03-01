@@ -39,7 +39,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.18.10",
     "supertest": "^3.3.0"
   }
 }
