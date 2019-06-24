@@ -1,12 +1,18 @@
 #!/bin/bash
 
 NAME='starter'
+USER='_user'
+PASSWORD='_password'
 
 if [ -n "$1" ]; then
     NAME=$1
 fi
 
-psql -U postgres -c "CREATE USER $NAME;"
-psql -U postgres -c "CREATE DATABASE $NAME;"
-psql -U postgres -c "alter user $NAME with encrypted password '$NAME';"
-psql -U postgres -c "grant all privileges on database $NAME to $NAME;"
+createDb() {
+    psql -c "CREATE USER $NAME$USER;"
+    psql -c "alter user $NAME$USER with encrypted password '$NAME$PASSWORD';"
+    psql -c "CREATE DATABASE $NAME;"
+    psql -c "grant all privileges on database $NAME to $NAME$USER;"
+}
+
+createDb

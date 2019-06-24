@@ -4,8 +4,8 @@
     "postgres": {
         "host": "localhost",
         "database": "starter",
-        "username": "starter",
-        "password": "starter",
+        "username": "starter_user",
+        "password": "starter_password",
         "port": 5432
     },
     "test": {
@@ -14,8 +14,8 @@
         "postgres": {
             "host": "localhost",
             "database": "starter_test",
-            "username": "starter_test",
-            "password": "starter_test",
+            "username": "starter_test_user",
+            "password": "starter_test_password",
             "port": 5432
         }
     },
